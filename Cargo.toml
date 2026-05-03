@@ -1,0 +1,24 @@
+[package]
+name = "libglass-rs"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+windows = { version = "0.62.2", features = [
+    "Win32_Foundation",
+    "Win32_System_Diagnostics_ToolHelp",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_System_Threading",
+] }
+napi = "3"
+napi-derive = "3"
+
+[build-dependencies]
+napi-build = { version = "2" }
+
+[profile.release]
+opt-level = 3
+lto = true

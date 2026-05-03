@@ -18,3 +18,8 @@ NativeMethods.txt
 *.cs
 *.csproj
 *.sln
+bin/
+target/
+src/
+Cargo.lock
+Cargo.toml

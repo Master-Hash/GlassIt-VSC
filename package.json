@@ -1,5 +1,8 @@
 {
   "name": "glassit",
+  "napi": {
+    "binaryName": "libglass-rs"
+  },
   "displayName": "GlassIt-VSC",
   "version": "0.2.6",
   "description": "VS Code Extension to set window to transparent on Windows.",
@@ -22,8 +25,12 @@
     "win32"
   ],
   "main": "./extension.js",
-  "scripts": {},
+  "scripts": {
+    "build": "napi build --platform --release",
+    "package": "vsce package --allow-star-activation"
+  },
   "devDependencies": {
+    "@napi-rs/cli": "^3.6.2",
     "@types/vscode": "^1.74.0",
     "@vscode/vsce": "^3.9.1",
     "oxfmt": "^0.47.0",

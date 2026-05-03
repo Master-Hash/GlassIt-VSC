@@ -3,3 +3,8 @@ node_modules/
 *.vsix
 obj/
 bin/
+
+/target
+*.node
+index.js
+index.d.ts
