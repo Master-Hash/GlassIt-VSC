@@ -29,6 +29,7 @@ namespace GlassIt
             {
                 using (proc)
                 {
+                    proc.Refresh();
                     if (!string.Equals(GetMainModuleFileName(proc), executablePath, StringComparison.OrdinalIgnoreCase))
                     {
                         continue;

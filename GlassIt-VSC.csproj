@@ -13,7 +13,6 @@
     <PackNpmPackage>true</PackNpmPackage>
     <PackageOutputPath>pkg</PackageOutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <StripSymbols>false</StripSymbols>
     <!-- <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile> -->
   </PropertyGroup>
 

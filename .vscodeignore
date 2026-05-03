@@ -14,5 +14,7 @@ obj/
 pnpm-lock.yaml
 pnpm-workspace.yaml
 global.json
+NativeMethods.txt
 *.cs
 *.csproj
+*.sln
