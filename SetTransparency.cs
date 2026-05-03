@@ -27,8 +27,8 @@ namespace GlassIt
                             return true;
                         }
 
-                        var windowLong = User32.GetWindowLong(hWnd, GWL.EXSTYLE);
-                        User32.SetWindowLong(hWnd, GWL.EXSTYLE, windowLong | WS.EX_LAYERED);
+                        var windowLong = User32.GetWindowLongPtr(hWnd, GWL.EXSTYLE);
+                        User32.SetWindowLongPtr(hWnd, GWL.EXSTYLE, windowLong | (nint)WS.EX_LAYERED);
                         return User32.SetLayeredWindowAttributes(hWnd, 0, alpha, LWA.ALPHA);
                     }, IntPtr.Zero)).All(result => result);
         }
@@ -52,11 +52,11 @@ namespace Windows
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool IsWindowVisible(IntPtr hWnd);
 
-        [LibraryImport("user32.dll")]
-        public static partial WS GetWindowLong(IntPtr hWnd, GWL nIndex);
+        [LibraryImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
+        public static partial nint GetWindowLongPtr(IntPtr hWnd, GWL nIndex);
 
-        [LibraryImport("user32.dll")]
-        public static partial int SetWindowLong(IntPtr hWnd, GWL nIndex, WS dwNewLong);
+        [LibraryImport("user32.dll", EntryPoint = "SetWindowLongPtrW")]
+        public static partial nint SetWindowLongPtr(IntPtr hWnd, GWL nIndex, nint dwNewLong);
 
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
