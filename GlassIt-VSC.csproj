@@ -19,6 +19,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.JavaScript.NodeApi" Version="0.9.19" />
     <PackageReference Include="Microsoft.JavaScript.NodeApi.Generator" Version="0.9.19" />
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.275">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

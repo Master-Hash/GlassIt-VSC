@@ -1,8 +1,10 @@
 using Microsoft.JavaScript.NodeApi;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
-using Windows;
+using System.Runtime.Versioning;
 using Microsoft.JavaScript.NodeApi.Interop;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace GlassIt
 {
@@ -10,79 +12,37 @@ namespace GlassIt
     public class SetTransParency
     {
         [JSExport("setTransparency")]
+        [SupportedOSPlatform("windows5.0")]
         public static bool SetTransparency(int pid, byte alpha)
         {
             var mainproc = Process.GetProcessById(pid);
             return (from proc in Process.GetProcessesByName(mainproc.ProcessName)
-                    where proc.MainModule?.FileName == mainproc.MainModule?.FileName
+                    where !string.IsNullOrEmpty(proc.MainModule?.FileName) &&
+                          proc.MainModule.FileName == mainproc.MainModule?.FileName
                     select proc.MainWindowHandle
                 into hMainWnd
                     where hMainWnd != IntPtr.Zero
-                    select User32.GetWindowThreadProcessId(hMainWnd, out pid)
+                    select PInvoke.GetWindowThreadProcessId(new HWND(hMainWnd), out _)
                 into tid
-                    select User32.EnumThreadWindows(tid, delegate (IntPtr hWnd, IntPtr lParam)
+                    select PInvoke.EnumThreadWindows(tid, delegate (HWND hWnd, LPARAM lParam)
                     {
-                        if (!User32.IsWindowVisible(hWnd))
+                        if (!PInvoke.IsWindowVisible(hWnd))
                         {
                             return true;
                         }
 
-                        var windowLong = User32.GetWindowLongPtr(hWnd, GWL.EXSTYLE);
-                        User32.SetWindowLongPtr(hWnd, GWL.EXSTYLE, windowLong | (nint)WS.EX_LAYERED);
-                        return User32.SetLayeredWindowAttributes(hWnd, 0, alpha, LWA.ALPHA);
-                    }, IntPtr.Zero)).All(result => result);
+                        var windowLong = PInvoke.GetWindowLongPtr(hWnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
+                        PInvoke.SetWindowLongPtr(
+                            hWnd,
+                            WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE,
+                            windowLong | (nint)WINDOW_EX_STYLE.WS_EX_LAYERED);
+
+                        return PInvoke.SetLayeredWindowAttributes(
+                            hWnd,
+                            new COLORREF(0),
+                            alpha,
+                            LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA);
+                    }, default)).All(result => result);
         }
-    }
-}
-
-namespace Windows
-{
-    internal static partial class User32
-    {
-        public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
-
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool EnumThreadWindows(uint dwThreadId, EnumWindowsProc lpEnumFunc, IntPtr lParam);
-
-        [LibraryImport("user32.dll")]
-        public static partial uint GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
-
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool IsWindowVisible(IntPtr hWnd);
-
-        [LibraryImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
-        public static partial nint GetWindowLongPtr(IntPtr hWnd, GWL nIndex);
-
-        [LibraryImport("user32.dll", EntryPoint = "SetWindowLongPtrW")]
-        public static partial nint SetWindowLongPtr(IntPtr hWnd, GWL nIndex, nint dwNewLong);
-
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool SetLayeredWindowAttributes(IntPtr hWnd, uint crKey, byte bAlpha, LWA dwFlags);
-    }
-
-    internal enum GWL : int
-    {
-        EXSTYLE = -20,
-        HINSTANCE = -6,
-        HWNDPARENT = -8,
-        ID = -12,
-        STYLE = -16,
-        USERDATA = -21,
-        WNDPROC = -4,
-    }
-
-    [Flags]
-    internal enum WS : int
-    {
-        EX_LAYERED = 0x80000,
-    }
-
-    internal enum LWA : int
-    {
-        COLORKEY = 1,
-        ALPHA = 2,
     }
 }

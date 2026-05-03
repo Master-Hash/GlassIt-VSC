@@ -1,0 +1,7 @@
+EnumThreadWindows
+GetWindowThreadProcessId
+IsWindowVisible
+GetWindowLongPtr
+SetWindowLongPtr
+SetLayeredWindowAttributes
+WINDOW_EX_STYLE
