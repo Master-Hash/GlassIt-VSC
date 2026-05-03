@@ -15,7 +15,7 @@ namespace GlassIt
         [SupportedOSPlatform("windows5.0")]
         public static bool SetTransparency(int pid, byte alpha)
         {
-            var mainproc = Process.GetProcessById(pid);
+            using var mainproc = Process.GetProcessById(pid);
             var executablePath = GetMainModuleFileName(mainproc);
             if (string.IsNullOrEmpty(executablePath))
             {
@@ -29,12 +29,11 @@ namespace GlassIt
             {
                 using (proc)
                 {
-                    proc.Refresh();
+                    if (proc is null) { continue; }
                     if (!string.Equals(GetMainModuleFileName(proc), executablePath, StringComparison.OrdinalIgnoreCase))
                     {
                         continue;
                     }
-
                     var hMainWnd = proc.MainWindowHandle;
                     if (hMainWnd == IntPtr.Zero)
                     {
