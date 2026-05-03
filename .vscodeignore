@@ -5,3 +5,14 @@ test/**
 jsconfig.json
 vsc-extension-quickstart.md
 .eslintrc.json
+bin/Debug/
+bin/Release/
+bin/*.pdb
+obj/
+.idea/
+.github/
+pnpm-lock.yaml
+pnpm-workspace.yaml
+global.json
+*.cs
+*.csproj

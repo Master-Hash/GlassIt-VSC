@@ -2,7 +2,7 @@
   "name": "glassit",
   "displayName": "GlassIt-VSC",
   "version": "0.2.6",
-  "description": "VS Code Extension to set window to transparent on Windows and Linux platforms.",
+  "description": "VS Code Extension to set window to transparent on Windows.",
   "categories": [
     "Other",
     "Themes"
@@ -17,10 +17,17 @@
     "url": "https://github.com/hikarin522/GlassIt-VSC.git"
   },
   "publisher": "s-nlf-fh",
-  "main": "./extension",
+  "type": "module",
+  "os": [
+    "win32"
+  ],
+  "main": "./extension.js",
   "scripts": {},
-  "dependencies": {
-    "node-powershell": "^4.0.0"
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@vscode/vsce": "^3.9.1",
+    "oxfmt": "^0.47.0",
+    "oxlint": "^1.62.0"
   },
   "contributes": {
     "configuration": {
@@ -35,11 +42,6 @@
           "type": "integer",
           "default": 5,
           "description": "Increment of alpha"
-        },
-        "glassit.force_sway": {
-          "type": "boolean",
-          "default": false,
-          "description": "Force using swaymsg to set transparency"
         }
       }
     },
@@ -100,6 +102,7 @@
     }
   ],
   "engines": {
-    "vscode": "^1.40.0"
-  }
+    "vscode": "^1.74.0"
+  },
+  "packageManager": "pnpm@11.0.3"
 }

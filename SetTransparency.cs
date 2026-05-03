@@ -1,79 +1,69 @@
-
-using System;
+using Microsoft.JavaScript.NodeApi;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-
 using Windows;
+using Microsoft.JavaScript.NodeApi.Interop;
 
 namespace GlassIt
 {
-    public static class SetTransParency
+    [JSModule]
+    public class SetTransParency
     {
+        [JSExport("setTransparency")]
         public static bool SetTransparency(int pid, byte alpha)
         {
             Process mainproc = Process.GetProcessById(pid);
-            foreach (Process proc in Process.GetProcessesByName(mainproc.ProcessName))
-            {
-                if (proc.StartInfo.FileName != mainproc.StartInfo.FileName)
-                {
-                    continue;
-                }
-
-                IntPtr hMainWnd = proc.MainWindowHandle;
-                if (hMainWnd == IntPtr.Zero)
-                {
-                    continue;
-                }
-
-                uint tid = User32.GetWindowThreadProcessId(hMainWnd, out pid);
-                bool result = User32.EnumThreadWindows(tid, delegate(IntPtr hWnd, IntPtr lParam) {
-                    if (!User32.IsWindowVisible(hWnd))
+            return (from proc in Process.GetProcessesByName(mainproc.ProcessName)
+                    // where proc.StartInfo.FileName == mainproc.StartInfo.FileName
+                    select proc.MainWindowHandle
+                into hMainWnd
+                    where hMainWnd != IntPtr.Zero
+                    select User32.GetWindowThreadProcessId(hMainWnd, out pid)
+                into tid
+                    select User32.EnumThreadWindows(tid, delegate (IntPtr hWnd, IntPtr lParam)
                     {
-                        return true;
-                    }
+                        if (!User32.IsWindowVisible(hWnd))
+                        {
+                            return true;
+                        }
 
-                    WS windowLong = User32.GetWindowLong(hWnd, GWL.EXSTYLE);
-                    User32.SetWindowLong(hWnd, GWL.EXSTYLE, windowLong | WS.EX_LAYERED);
-                    return User32.SetLayeredWindowAttributes(hWnd, 0, alpha, LWA.ALPHA);
-                }, IntPtr.Zero);
-
-                if (!result)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+                        var windowLong = User32.GetWindowLong(hWnd, GWL.EXSTYLE);
+                        User32.SetWindowLong(hWnd, GWL.EXSTYLE, windowLong | WS.EX_LAYERED);
+                        return User32.SetLayeredWindowAttributes(hWnd, 0, alpha, LWA.ALPHA);
+                    }, IntPtr.Zero)).All(result => result);
         }
     }
 }
 
 namespace Windows
 {
-    internal static class User32
+    internal static partial class User32
     {
         public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
-        [DllImport("user32.dll")]
-        public static extern bool EnumThreadWindows(uint dwThreadId, EnumWindowsProc lpEnumFunc, IntPtr lParam);
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool EnumThreadWindows(uint dwThreadId, EnumWindowsProc lpEnumFunc, IntPtr lParam);
 
-        [DllImport("user32.dll")]
-        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
+        [LibraryImport("user32.dll")]
+        public static partial uint GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
-        [DllImport("user32.dll")]
-        public static extern bool IsWindowVisible(IntPtr hWnd);
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool IsWindowVisible(IntPtr hWnd);
 
-        [DllImport("user32.dll")]
-        public static extern WS GetWindowLong(IntPtr hWnd, GWL nIndex);
+        [LibraryImport("user32.dll")]
+        public static partial WS GetWindowLong(IntPtr hWnd, GWL nIndex);
 
-        [DllImport("user32.dll")]
-        public static extern int SetWindowLong(IntPtr hWnd, GWL nIndex, WS dwNewLong);
+        [LibraryImport("user32.dll")]
+        public static partial int SetWindowLong(IntPtr hWnd, GWL nIndex, WS dwNewLong);
 
-        [DllImport("user32.dll")]
-        public static extern bool SetLayeredWindowAttributes(IntPtr hWnd, uint crKey, byte bAlpha, LWA dwFlags);
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool SetLayeredWindowAttributes(IntPtr hWnd, uint crKey, byte bAlpha, LWA dwFlags);
     }
 
-    internal enum GWL: int
+    internal enum GWL : int
     {
         EXSTYLE = -20,
         HINSTANCE = -6,
@@ -85,12 +75,12 @@ namespace Windows
     }
 
     [Flags]
-    internal enum WS: int
+    internal enum WS : int
     {
         EX_LAYERED = 0x80000,
     }
 
-    internal enum LWA: int
+    internal enum LWA : int
     {
         COLORKEY = 1,
         ALPHA = 2,
