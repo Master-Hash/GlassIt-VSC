@@ -1,49 +1,27 @@
 {
   "name": "glassit",
   "displayName": "GlassIt-VSC",
-  "description": "VS Code Extension to set window to transparent on Windows and Linux platforms.",
   "version": "0.2.6",
-  "publisher": "s-nlf-fh",
-  "license": "MIT",
-  "engines": {
-    "vscode": "^1.40.0"
-  },
-  "extensionKind": [
-    "ui"
-  ],
+  "description": "VS Code Extension to set window to transparent on Windows and Linux platforms.",
   "categories": [
-    "Themes",
-    "Other"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/hikarin522/GlassIt-VSC.git"
-  },
-  "badges": [
-    {
-      "url": "https://img.shields.io/visual-studio-marketplace/v/s-nlf-fh.glassit",
-      "description": "Version",
-      "href": "https://marketplace.visualstudio.com/items?itemName=s-nlf-fh.glassit"
-    },
-    {
-      "url": "https://img.shields.io/visual-studio-marketplace/i/s-nlf-fh.glassit",
-      "description": "Installs",
-      "href": "https://marketplace.visualstudio.com/items?itemName=s-nlf-fh.glassit"
-    },
-    {
-      "url": "https://img.shields.io/visual-studio-marketplace/r/s-nlf-fh.glassit",
-      "description": "Rating",
-      "href": "https://marketplace.visualstudio.com/items?itemName=s-nlf-fh.glassit"
-    }
+    "Other",
+    "Themes"
   ],
   "bugs": {
     "url": "https://github.com/hikarin522/GlassIt-VSC/issues",
     "email": "hikarin522@outlook.jp"
   },
-  "activationEvents": [
-    "*"
-  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hikarin522/GlassIt-VSC.git"
+  },
+  "publisher": "s-nlf-fh",
   "main": "./extension",
+  "scripts": {},
+  "dependencies": {
+    "node-powershell": "^4.0.0"
+  },
   "contributes": {
     "configuration": {
       "title": "GlassIt VSC configuration",
@@ -98,8 +76,30 @@
       }
     ]
   },
-  "scripts": {},
-  "dependencies": {
-    "node-powershell": "^4.0.0"
+  "activationEvents": [
+    "*"
+  ],
+  "extensionKind": [
+    "ui"
+  ],
+  "badges": [
+    {
+      "url": "https://img.shields.io/visual-studio-marketplace/v/s-nlf-fh.glassit",
+      "description": "Version",
+      "href": "https://marketplace.visualstudio.com/items?itemName=s-nlf-fh.glassit"
+    },
+    {
+      "url": "https://img.shields.io/visual-studio-marketplace/i/s-nlf-fh.glassit",
+      "description": "Installs",
+      "href": "https://marketplace.visualstudio.com/items?itemName=s-nlf-fh.glassit"
+    },
+    {
+      "url": "https://img.shields.io/visual-studio-marketplace/r/s-nlf-fh.glassit",
+      "description": "Rating",
+      "href": "https://marketplace.visualstudio.com/items?itemName=s-nlf-fh.glassit"
+    }
+  ],
+  "engines": {
+    "vscode": "^1.40.0"
   }
 }
