@@ -12,9 +12,9 @@ namespace GlassIt
         [JSExport("setTransparency")]
         public static bool SetTransparency(int pid, byte alpha)
         {
-            Process mainproc = Process.GetProcessById(pid);
+            var mainproc = Process.GetProcessById(pid);
             return (from proc in Process.GetProcessesByName(mainproc.ProcessName)
-                    // where proc.StartInfo.FileName == mainproc.StartInfo.FileName
+                    where proc.MainModule?.FileName == mainproc.MainModule?.FileName
                     select proc.MainWindowHandle
                 into hMainWnd
                     where hMainWnd != IntPtr.Zero
