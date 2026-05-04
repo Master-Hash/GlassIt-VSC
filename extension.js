@@ -1,5 +1,5 @@
 import { workspace, window, commands } from "vscode";
-import { setTransparency } from "./libglass-rs/index.js";
+import { setTransparency } from "./index.js";
 
 export function activate(context) {
     const config = () => workspace.getConfiguration("glassit");
