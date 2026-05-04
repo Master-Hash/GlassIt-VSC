@@ -40,3 +40,4 @@ jobs:
           path: |
             bin
             !bin/Release
+            !bin/*.pdb
